@@ -38,8 +38,6 @@ function App() {
   return (
     <>
       <RouterProvider router={router} />
-      <h1>React Redux</h1>
-      <button className="btn btn-success">Add</button>
 
     </>
   )
