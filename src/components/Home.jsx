@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useDispatch } from 'react-redux'
 import {addtoNotes, updatetoNotes} from '../redux/notesSlice'
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const Home = () => {
     const [title, setTitle] = useState('');
     const [value, setValue] = useState('');
@@ -31,8 +32,26 @@ const Home = () => {
     setTitle('');
     setValue('');
     setsearchParams({});//clear serch params
+    //add a toast or alert to notify the user that the note has been created successfully  
+
+ 
+        toast("Your note has been created successfully", {
+        position: "top-right",
+        autoClose: 2000,
+        // hideProgressBar: false,
+        // closeOnClick: true,
+        pauseOnHover: false,
+        // dragabble: true,
+        // progress: undefined,
+        theme:"dark",   
+    });
+    
+
     }
     //to store the note in local storage
+
+    
+
     
 
     return (
