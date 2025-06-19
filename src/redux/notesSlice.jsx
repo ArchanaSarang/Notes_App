@@ -1,5 +1,6 @@
 import { createSlice} from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
+
 // Helper to safely parse JSON from localStorage
 function getNotesFromLocalStorage() {
     try {
@@ -48,11 +49,19 @@ export const noteSlice = createSlice({
 
         },
         removeFromNOtes: (state, action)=>{
-
+            const noteId = action.payload;
+            console.log(noteId);
+            const index = state.notes.findIndex((n)=> n.id === noteId);
+            if(index !== -1){
+                state.notes.splice(index,1);
+                //upadte localstorage as well
+                localStorage.setItem('notes',JSON.stringify(state.notes));
+                toast.success("Note deleted");
+            }
         }
     }
 });
 
-// export const {addtoNotes, updatetoNotes, resetAllNotes, removeFromNOtes} = noteSlice.actions;
-export const {addtoNotes, updatetoNotes} = noteSlice.actions;
+export const {addtoNotes, updatetoNotes, resetAllNotes, removeFromNOtes} = noteSlice.actions;
+// export const {addtoNotes, updatetoNotes} = noteSlice.actions;
 export default noteSlice.reducer;
