@@ -1,4 +1,5 @@
 import { createSlice} from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
 // Helper to safely parse JSON from localStorage
 function getNotesFromLocalStorage() {
     try {
@@ -27,7 +28,21 @@ export const noteSlice = createSlice({
             localStorage.setItem('notes', JSON.stringify(state.notes));     
         },
         updatetoNotes: (state, action)=>{
-
+            const note = action.payload;
+            const index = state.notes.findIndex((n)=> n.id === note.id);
+            if(index!==-1){
+                // if note found with that id, then update the note
+                state.notes[index] = note;
+                //update the local storage as well
+                localStorage.setItem('notes',JSON.stringify(state.notes));
+                //add a toast to notify the user that the note has been updated successfully
+                // toast("Your note has been updated successfully",{
+                //     position: "top-center",
+                //     autoClose: 2000,
+                //     theme: "dark"
+                // });
+                toast.success("Note updated");
+            }
         },
         resetAllNotes: (state, action)=>{
 
