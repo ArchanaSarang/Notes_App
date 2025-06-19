@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import {removeFromNOtes} from '../redux/notesSlice'
+import { toast } from 'react-toastify';
 const Notes = () => {
     //get the notes from the redux store
     const note = useSelector((state) => state.note.notes);
@@ -12,9 +13,11 @@ const Notes = () => {
         setsearchTerms(e.target.value);
     }
     // filter notes based on search term
-    const filteredNotes = note.filter((n) => {
-        return n.title.toLowerCase().includes(searchTerm.toLowerCase())
-    });
+    // const filteredNotes = note.filter((n) => {
+    //     return n.title.toLowerCase().includes(searchTerm.toLowerCase())
+    // });
+
+    const filteredNotes = note.filter((n) => n && n.title && n.title.toLowerCase().includes(searchTerm.toLowerCase()));
 
     function handleDelete(noteId){
         dispatch(removeFromNOtes(note._id));
@@ -37,7 +40,7 @@ const Notes = () => {
                     filteredNotes.map(
                         (note) => {
                             return (
-                                <div className='border border-primary rounded p-2 m-2 bg-gray text-dark shadow-lg'>
+                                <div key={note._id} className='border border-primary rounded p-2 m-2 bg-gray text-dark shadow-lg'>
                                     <div className='text-success font-bold text-lg mb-2 fs-1'>
                                         {note.title}
                                     </div>
@@ -47,9 +50,12 @@ const Notes = () => {
                                     
                                     <div className="btn-group btn-group-sm mt-3" role="group" aria-label="Large button group">
                                         <button type="button" className="btn btn-outline-warning">Edit</button>
-                                        <button type="button" className="btn btn-outline-warning">View</button>
+                                        <button type="button" className="btn btn-outline-warning">View
+                                            <a href={`/notes/${note._id}`}>View</a>
+                                        </button>
                                         <button type="button" className="btn btn-outline-warning" onClick={()=>{handleDelete(note._id)}}>Delete</button>
-                                        <button type="button" className="btn btn-outline-warning">Copy</button>
+                                        <button type="button" className="btn btn-outline-warning" onClick={()=>{navigator.clipboard.writeText(note.content);
+                                             toast("Copied to clipboard")}}>Copy</button>
                                         <button type="button" className="btn btn-outline-warning">Share</button>
                                     </div>
                                     <div className='text-secondary mt-2 text-end fs-6'>
