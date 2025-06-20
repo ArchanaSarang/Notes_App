@@ -101,7 +101,7 @@ const Home = () => {
 
                     />
                 </div>
-                <button onClick={resetAll}>Reset</button>
+                {/* <button onClick={resetAll}>Reset</button> */}
             </div>
 
             {/* <h1>Home</h1> */}
