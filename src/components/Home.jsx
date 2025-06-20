@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useDispatch } from 'react-redux'
-import {addtoNotes, updatetoNotes} from '../redux/notesSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { addtoNotes, updatetoNotes, resetAllNotes} from '../redux/notesSlice'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 const Home = () => {
@@ -12,47 +12,65 @@ const Home = () => {
 
     const dispatch = useDispatch();
 
-    function createNote(){
+    const allNotes = useSelector((state) => state.note.notes);
+
+    // useEffect(()=>console.log('all notes',allNotes));
+    
+    function resetAll() {
+        dispatch(resetAllNotes(allNotes));
+    }
+
+    useEffect(()=>{
+        if(noteId){
+            const note = allNotes.find((n)=> n._id === noteId)
+            setTitle(note.title);
+            setValue(note.content);
+        }
+    },[noteId]);
+
+    function createNote() {
         const note = {
             title: title,
             content: value,
             _id: noteId || Date.now().toString(36), // if dont you have a noteId, then create a new id by date 
-    
-            createAt:new Date().toISOString(), //to save the current date and time
+            createAt: new Date().toISOString(), //to save the current date and time
         }
-        if(noteId){
-        //update the note
-        dispatch(updatetoNotes(note));
-    }else{
-        // create a dispnew note
-        dispatch(addtoNotes(note));
-    }
+        if (noteId) {
+            //update the note
+            console.log('updating');
+            console.log('id for updation',note);
+            dispatch(updatetoNotes(note));
+        } else {
+            // create a dispnew note
+            console.log(note._id)
+            dispatch(addtoNotes(note));
+        }
 
-    //after creation or updation clear the title & value of note
-    setTitle('');
-    setValue('');
-    setsearchParams({});//clear serch params
-    //add a toast or alert to notify the user that the note has been created successfully  
 
- 
+        //after creation or updation clear the title & value of note
+        setTitle('');
+        setValue('');
+        setsearchParams({});//clear serch params
+        //add a toast or alert to notify the user that the note has been created successfully  
+
+
         toast("Your note has been created successfully", {
-        position: "top-right",
-        autoClose: 2000,
-        // hideProgressBar: false,
-        // closeOnClick: true,
-        pauseOnHover: false,
-        // dragabble: true,
-        // progress: undefined,
-        theme:"dark",   
-    });
-    
+            position: "top-right",
+            autoClose: 2000,
+            // hideProgressBar: false,
+            // closeOnClick: true,
+            pauseOnHover: false,
+            // dragabble: true,
+            // progress: undefined,
+            theme: "dark",
+        });
+
 
     }
-    //to store the note in local storage
 
-    
 
-    
+
+
 
     return (
         <>
@@ -66,8 +84,8 @@ const Home = () => {
                         onChange={(e) => setTitle(e.target.value)}
                     />
                     <button
-                    onClick={createNote}
-                     className="btn btn-primary mx-2 my-3 rounded-3 p-2">
+                        onClick={createNote}
+                        className="btn btn-primary mx-2 my-3 rounded-3 p-2">
                         {
                             noteId ? 'Update My Note ' : 'Create My Note'
                         }
@@ -83,6 +101,7 @@ const Home = () => {
 
                     />
                 </div>
+                <button onClick={resetAll}>Reset</button>
             </div>
 
             {/* <h1>Home</h1> */}

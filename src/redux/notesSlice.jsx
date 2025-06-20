@@ -21,8 +21,9 @@ export const noteSlice = createSlice({
     initialState,
     reducers:{
         addtoNotes : (state, action)=>{
-            //your added note has been sent through payload to here in action, so lets extract that note from action and ave it in note variable
+            //your added note has been sent through payload to here in action, so lets extract that note from action and have it in note variable
             const note = action.payload;
+            console.log('created note info', note);
             //adn add this note to the notes array in state , which I have in initialstate
             state.notes.push(note);
             // now add this note to the local storage
@@ -30,29 +31,28 @@ export const noteSlice = createSlice({
         },
         updatetoNotes: (state, action)=>{
             const note = action.payload;
-            const index = state.notes.findIndex((n)=> n.id === note.id);
-            if(index!==-1){
+            console.log('note for updation',note)
+            const index = state.notes.findIndex((n)=> n._id === note._id);
+            if(index >= 0){
                 // if note found with that id, then update the note
                 state.notes[index] = note;
                 //update the local storage as well
                 localStorage.setItem('notes',JSON.stringify(state.notes));
                 //add a toast to notify the user that the note has been updated successfully
-                // toast("Your note has been updated successfully",{
-                //     position: "top-center",
-                //     autoClose: 2000,
-                //     theme: "dark"
-                // });
+                
                 toast.success("Note updated");
             }
         },
         resetAllNotes: (state, action)=>{
-
+            state.notes = [];
+            localStorage.removeItem('notes');
         },
         removeFromNOtes: (state, action)=>{
-            const noteId = action.payload;
-            console.log(noteId);
-            const index = state.notes.findIndex((n)=> n.id === noteId);
-            if(index !== -1){
+            const noteId= action.payload;
+            console.log('slice dlt id',noteId);
+            const index = state.notes.findIndex((n) => n._id === noteId );
+            console.log('dlt index',index)
+            if(index >= 0){
                 state.notes.splice(index,1);
                 //upadte localstorage as well
                 localStorage.setItem('notes',JSON.stringify(state.notes));
